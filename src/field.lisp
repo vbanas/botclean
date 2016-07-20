@@ -13,14 +13,21 @@
 	  :initarg :cells
 	  :accessor field-cells)))
 
+(defmethod initialize-instance :after ((field field) &rest initargs)
+  (declare (ignore initargs))
+  (with-slots (width height) field
+    (setf (field-cells field)
+          (make-array (list height width)
+                      :initial-element nil))))
+
 (defun get-cell (field pos)
-  (with-slots (field-cells) field
-    (aref field-cells (pos-y pos) (pos-x pos))))
+  (with-slots (cells) field
+    (aref cells (pos-y pos) (pos-x pos))))
 
 ;;mutable
 (defun put-cell (field pos val)
-  (with-slots (field-cells) field
-    (setf (aref field-cells (pos-y pos) (pos-x pos))
+  (with-slots (cells) field
+    (setf (aref cells (pos-y pos) (pos-x pos))
           val)))
 
 (defclass state ()
